@@ -47,6 +47,19 @@ class Users extends CI_Controller
         // $this->load->view();
         // echo "this works";
         // echo $_POST["user_name"];
-        echo $this->input->post('user_name');
+        // echo $this->input->post('user_name');
+        $this->form_validation->set_rules('user_name', 'Username', 'trim|required|mini_length[3]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|mini_length[3]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|mini_length[3]|matches[password]');
+
+        if ($this->form_validation->run() == FALSE) {
+            $data =  [
+                'errors' => validation_errors()
+            ];
+            
+            $this->session->set_flashdata($data);
+
+            redirect('home');
+        }
     }
 }
