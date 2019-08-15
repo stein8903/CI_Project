@@ -10,10 +10,10 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-xs-3">
+            <div class="col-xs-4">
                 <?php $this->load->view('users/login_view');?>
             </div>
-            <div class="col-xs-8">
+            <div class="col-xs-7">
                 <?php $this->load->view($main_view);?>
             </div>
         </div>

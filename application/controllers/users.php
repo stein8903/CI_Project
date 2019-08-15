@@ -42,15 +42,25 @@ class Users extends CI_Controller
     //     $this->user_model->delete_users($id);
     // }
 
+
+
+
+    public function register()
+    {
+        $this->form_validation->set_rules('user_name', 'Username', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[3]|matches[password]');
+        
+        $data['main_view'] = 'users/register_view';
+
+        $this->load->view('layouts/main', $data);
+    }
+
     public function login()
     {
-        // $this->load->view();
-        // echo "this works";
-        // echo $_POST["user_name"];
-        // echo $this->input->post('user_name');
-        $this->form_validation->set_rules('user_name', 'Username', 'trim|required|mini_length[3]');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|mini_length[3]');
-        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|mini_length[3]|matches[password]');
+        $this->form_validation->set_rules('user_name', 'Username', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[3]|matches[password]');
 
         if ($this->form_validation->run() == FALSE) {
             $data =  [
@@ -60,6 +70,39 @@ class Users extends CI_Controller
             $this->session->set_flashdata($data);
 
             redirect('home');
+        } else {
+            $user_name = $this->input->post('user_name');
+            $password = $this->input->post('password');
+
+            $user_id = $this->user_model->login_user($user_name, $password);
+
+            if ($user_id) {
+                $user_data = [
+                    'user_id' => $user_id,
+                    'user_name' => $user_name,
+                    'logged_in' => true
+                ];
+
+                $this->session->set_userdata($user_data);
+
+                $this->session->set_flashdata('login_success', 'You are now logged in');
+
+                $data['main_view'] = 'admin_view';
+
+                $this->load->view('layouts/main', $data);
+                // redirect('home/index');
+
+            } else {
+                $this->session->set_flashdata('login_failed', 'Sorry your login failed');
+                redirect('home/index');
+            }
+
         }
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('home');
     }
 }
