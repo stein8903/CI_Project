@@ -44,4 +44,16 @@ class User_model extends CI_Model
             return false;
         }
     }
+
+    public function create($data)
+    {
+        $this->db->insert('users', $data);
+    }
+
+
+    public function check_same_account($data)
+    {
+        $this->db->where('user_name', $data['user_name']);
+        $this->db->where('email', $data['email']);
+    }
 }
